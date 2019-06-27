@@ -142,7 +142,7 @@ app.post("/api/book_update", (req, res) => {
     })
 })
 //DELETE
-app.delete("/api/delete_update", (req, res) => {
+app.delete("/api/delete_book", (req, res) => {
     let id = req.query.id;
     Book.findByIdAndRemove(id, (err, doc) => {
         if (err) return res.status(400).send(err);

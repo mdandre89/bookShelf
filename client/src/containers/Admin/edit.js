@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { connect } from "react-redux"
-import { getBook, updateBook, clearBook, deletePost } from "../../actions"
+import { getBook, updateBook, clearBook, deleteBook } from "../../actions";
+import { Link } from "react-router-dom"
 
 export class EditBook extends PureComponent {
     state = {
@@ -18,6 +19,13 @@ export class EditBook extends PureComponent {
         e.preventDefault();
         this.props.dispatch(updateBook(this.state.formdata))
     }
+    deletePost = () => {
+        this.props.dispatch(deleteBook(this.props.match.params.id))
+    }
+    redirectUser = () => {
+        setTimeout(() => this.props.history.push("/user/user-reviews"), 1500)
+    }
+
     handleInput = (event, name) => {
         const newFormdata = { ...this.state.formdata };
         newFormdata[name] = event.target.value;
@@ -32,9 +40,23 @@ export class EditBook extends PureComponent {
         console.log(book)
         if (book) { this.setState({ formdata: { _id: book._id, name: book.name, author: book.author, review: book.review, pages: book.pages, rating: book.rating, price: book.price } }) }
     }
+
+    componentWillUnmount() {
+        this.props.dispatch(clearBook())
+    }
+
     render() {
+        let books = this.props.books;
         return (
             <div className="rl_container article">
+                {books.updateBook ?
+                    <div className="edit_confirm">
+                        post update,<Link to={`/books/${books.book._id}`}>
+                            Click here to see your post
+                    </Link>
+                    </div> : null}
+                {books.postDeleted ? <div className="red_tag">Post Deleted{this.redirectUser()}</div> : null}
+
                 <form onSubmit={this.submitForm}>
                     <h2>Edit a review</h2>
                     <div className="form_element">
@@ -70,7 +92,8 @@ export class EditBook extends PureComponent {
                     </div>
                     <button type="submit">Edit review</button>
                     <div className="delete_post">
-                        <div className="button">
+                        <div className="button"
+                            onClick={this.deletePost}>
                             Delete review
                         </div>
                     </div>
