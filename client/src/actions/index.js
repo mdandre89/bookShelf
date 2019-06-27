@@ -1,0 +1,85 @@
+import axios from "axios"
+
+export function getBooks(
+    limit = 10,
+    start = 0,
+    order = "asc"
+) {
+    const request = axios.get(`/api/books?limit=${limit}&skip=${start}&order=${order}`).then(response => response.data)
+
+    return {
+        type: "GET_BOOKS",
+        payload: request
+    }
+}
+export function getBookWithReviewer(id) {
+    const request = axios.get(`/api/getBook?id=${id}`)
+    return (dispatch) => {
+        request.then(({ data }) => {
+            let book = data;
+            axios.get(`/api/getReviewer?id=${book.ownerId}`).then(({ data }) => {
+                let response = { book, reviewer: data }
+                dispatch({
+                    type: "GET_BOOK_W_REVIEWER",
+                    payload: response
+                })
+            })
+        })
+    }
+}
+export function clearBookWithReviewer() {
+    return {
+        type: "CLEAR_BOOK_W_REVIEWER",
+        payload: { book: {}, reviewer: {} }
+    }
+}
+export function addReview(book) {
+    console.log(book)
+    const request = axios.post("/api/book", book).then(
+        response => response.data
+    )
+    console.log(request)
+    return {
+        type: "ADD_BOOK",
+        payload: request
+    }
+}
+export function clearNewBook() {
+    return { type: "CLEAR_NEWBOOK", payload: {} }
+}
+export function getUserPosts(userId) {
+    const request = axios.get(`/api/user_posts?user=${userId}`).then(response => response.data)
+    console.log(request)
+    return {
+        type: "GET_USER_POSTS",
+        payload: request
+    }
+}
+export function getBook(id) {
+    const request = axios.get(`/api/getBook?id=${id}`).then(response => response.data);
+    console.log(request)
+    return {
+        type: "GET_BOOK",
+        payload: request
+    }
+}
+export function updateBook(data) {
+    const request = axios.post(`/api/book_update`, data).then(response => response.data)
+    return { type: "UPDATE_BOOK", payload: request }
+}
+
+//User stuff
+export function loginUser({ email, password }) {
+    const request = axios.post("/api/login", { email, password }).then(response => response.data)
+    return {
+        type: "USER_LOGIN",
+        payload: request
+    }
+}
+export function auth() {
+    const request = axios.get("/api/auth").then(response => response.data)
+    return {
+        type: "USER_AUTH",
+        payload: request
+    }
+}
