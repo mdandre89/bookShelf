@@ -37,7 +37,6 @@ export class EditBook extends PureComponent {
     }
     componentWillReceiveProps(nextProps) {
         let book = nextProps.books.book;
-        console.log(book)
         if (book) { this.setState({ formdata: { _id: book._id, name: book.name, author: book.author, review: book.review, pages: book.pages, rating: book.rating, price: book.price } }) }
     }
 

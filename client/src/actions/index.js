@@ -34,11 +34,9 @@ export function clearBookWithReviewer() {
     }
 }
 export function addReview(book) {
-    console.log(book)
     const request = axios.post("/api/book", book).then(
         response => response.data
     )
-    console.log(request)
     return {
         type: "ADD_BOOK",
         payload: request
@@ -49,7 +47,6 @@ export function clearNewBook() {
 }
 export function getUserPosts(userId) {
     const request = axios.get(`/api/user_posts?user=${userId}`).then(response => response.data)
-    console.log(request)
     return {
         type: "GET_USER_POSTS",
         payload: request
@@ -57,7 +54,6 @@ export function getUserPosts(userId) {
 }
 export function getBook(id) {
     const request = axios.get(`/api/getBook?id=${id}`).then(response => response.data);
-    console.log(request)
     return {
         type: "GET_BOOK",
         payload: request
@@ -72,7 +68,7 @@ export function deleteBook(id) {
     return { type: "DELETE_BOOK", payload: request }
 }
 export function clearBook() {
-    return { type: "CLEAR_BOOK", payload: { book: {}, updateBook: false, postDeleted: false } }
+    return { type: "CLEAR_BOOK", payload: { book: null, updateBook: false, postDeleted: false } }
 }
 //User stuff
 export function loginUser({ email, password }) {
@@ -87,5 +83,28 @@ export function auth() {
     return {
         type: "USER_AUTH",
         payload: request
+    }
+}
+
+export function getUsers() {
+    const request = axios.get(`/api/users`).then(response => response.data)
+    return {
+        type: "GET_USER",
+        payload: request
+    }
+}
+
+export function userRegister(user, userList) {
+    const request = axios.post(`/api/register`, user)
+    console.log(request)
+    return (dispatch) => {
+        request.then(({ data }) => {
+            let users = data.success ? [...userList, data.user] : userList;
+            let response = {
+                success: data.success,
+                users
+            }
+            dispatch({ type: "USER_REGISTER", payload: response })
+        })
     }
 }

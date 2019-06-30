@@ -22,7 +22,6 @@ app.get("/api/getBook", (req, res) => {
         if (err) return res.status(400).send(err);
         res.send(doc);
     })
-    console.log("hello get")
 })
 
 app.get("/api/books", (req, res) => {
@@ -77,7 +76,6 @@ app.get("/api/auth", auth, (req, res) => {
         lastname: req.user.lastname
     })
 })
-
 //POST
 app.post("/api/book", (req, res) => {
     const book = new Book(req.body);
@@ -100,7 +98,6 @@ app.post("/api/register", (req, res) => {
         })
     })
 })
-
 app.post("/api/login", (req, res) => {
     User.findOne({ "email": req.body.email }, (err, user) => {
         if (!user) { return res.json({ isAuth: false, message: "Auth Failed, wrong email or password" }) } else {
@@ -127,11 +124,8 @@ app.post("/api/login", (req, res) => {
         }
     })
 })
-
-
 //UPDATE
 app.post("/api/book_update", (req, res) => {
-    console.log("update");
     let { _id, ...rest } = req.body
     Book.findByIdAndUpdate(_id, rest, { new: true }, (err, doc) => {
         if (err) return res.status(400).send(err);
@@ -149,7 +143,6 @@ app.delete("/api/delete_book", (req, res) => {
         res.json(true)
     })
 })
-
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => { console.log("SERVER RUNNING") });
